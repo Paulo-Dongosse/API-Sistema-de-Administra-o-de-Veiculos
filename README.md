@@ -1,171 +1,113 @@
-# 🚀 Minimal API – Sistema de Administração e Veículos
+#!/bin/bash
 
-Uma API desenvolvida com **.NET Minimal API**, que implementa autenticação JWT e controle de acesso por perfis, permitindo **gestão de administradores e veículos** com segurança e organização em camadas.
+# Este script emula a criação e exibição do arquivo README.md
+# O conteúdo abaixo está no formato Markdown e pronto para ser copiado para seu GitHub.
 
-## 🧰 Tecnologias Utilizadas
+cat << 'EOF'
+# 🚀 Minimal API .NET 8: Sistema de Administração de Veículos 🛠️
 
-- [.NET 7+](https://dotnet.microsoft.com/) — Minimal API  
-- **Entity Framework Core** — ORM para persistência de dados  
-- **MySQL** — Banco de dados relacional  
-- **Swagger / OpenAPI** — Documentação interativa  
-- **JWT Authentication** — Segurança e controle de acesso por token  
-- **Authorization Roles** — Perfis `adm` e `editor`  
+Uma API REST completa, desenvolvida com **.NET 8 Minimal API**, que implementa um sistema seguro de **Gestão de Administradores e Veículos**.
 
----
-
-## 📂 Estrutura do Projeto
-
-```
-minimal-api/
-├── Dominio/                     # Entidades, interfaces, serviços de domínio
-├── infraestrutura/              # Repositórios, contexto EF Core, Db
-├── Migrations/                  # Migrations do EF Core
-├── Properties/                  # launchSettings.json
-├── Program.cs                   # Configuração dos endpoints e middlewares
-├── appsettings.json             # Configuração de conexão com o banco e JWT
-├── appsettings.Development.json
-├── minimal-api.csproj
-```
+O projeto utiliza **Autenticação JWT** e controle de acesso por **Roles** (`adm`, `editor`) para proteger rotas.
 
 ---
 
-## 🔐 Autenticação JWT
+## 🌐 Deploy Online e Documentação Interativa
 
-A API utiliza **JWT Bearer Token** para proteger rotas.  
-O token é gerado ao fazer login com um administrador válido.  
-Perfis de acesso:
-- `adm` — acesso total (CRUD de administradores e veículos)
-- `editor` — acesso limitado a alguns endpoints de veículos
+A API está hospedada e conteinerizada no **Render** com MySQL.
 
-Após obter o token, inclua-o no header das requisições:
-```
-Authorization: Bearer {seu_token_aqui}
-```
+**Clique para interagir com o Swagger UI em Produção:**
+[https://api-sistema-de-administra-o-de-veiculos.onrender.com/swagger/index.html](https://api-sistema-de-administra-o-de-veiculos.onrender.com/swagger/index.html)
 
----
+### Visão Geral da API Online
 
-## 🏁 Endpoints Disponíveis
+Visualize a estrutura dos endpoints e dos DTOs:
 
-### 🏠 **Home**
-| Método | Endpoint | Descrição |
-|--------|-----------|------------|
-| GET | `/` | Exibe informações básicas da API |
+<div align="center">
+    <img src="ima1.png" alt="Endpoints de Administradores" width="300px"/>
+    <img src="ima2.png" alt="Endpoints de Veículos" width="300px"/>
+    <img src="ima3.png" alt="Schemas de Dados" width="300px"/>
+</div>
 
 ---
 
-### 👤 **Administradores**
+## 🧰 Stack Tecnológica Principal
 
-| Método | Endpoint | Autorização | Descrição |
-|--------|-----------|-------------|------------|
-| POST | `/administradores/Login` | ❌ Público | Realiza login e retorna token JWT |
-| GET | `/administradores/listar` | ✅ `adm` | Lista todos os administradores |
-| GET | `/Administradores/PorId/{id}` | ✅ `adm` | Busca administrador por ID |
-| POST | `/Administradores/cadastrar` | ✅ `adm` | Cadastra um novo administrador |
-
-📌 **Observação:**  
-- Campos obrigatórios: `Email`, `Senha` e `Perfil` (ex.: `adm` ou `editor`).
-
-🪙 **Exemplo de resposta ao logar**:
-```json
-{
-  "email": "admin@teste.com",
-  "perfil": "adm",
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-}
-```
+| Tecnologia | Função no Projeto | Detalhes |
+| :--- | :--- | :--- |
+| **.NET 8** | Backend (Minimal API) | Foco em performance e endpoints concisos. |
+| **MySQL** | Banco de Dados | Persistência de dados relacional. |
+| **EF Core** | Mapeamento ORM | Gerenciamento de schema e migrações. |
+| **JWT** | Segurança | Autenticação com Bearer Token. |
+| **Docker** | Deploy | Imagem multi-stage leve para produção. |
 
 ---
+
+## 🔐 Autenticação e Autorização (JWT com Roles)
+
+A API requer autenticação via **JWT Bearer Token** para a maioria das rotas.
+
+### Perfis de Acesso
+| Perfil | Descrição |
+| :--- | :--- |
+| **`adm`** | **Acesso Total:** CRUD em Administradores e Veículos. |
+| **`editor`** | **Acesso Limitado:** CRUD em Veículos, excluindo exclusão/atualização de Administradores. |
+
+### Dados de Acesso Inicial (Para Teste)
+O banco de dados foi inicializado via EF Core Migrations com a seguinte conta:
+* **Endpoint:** `POST /administradores/Login`
+* **Email:** `administrador@teste.com`
+* **Senha:** `123456`
+* **Perfil:** `adm`
+
+---
+
+## 🏁 Endpoints em Destaque
+
+### 👥 **Administradores**
+| Método | Rota | Autorização |
+| :--- | :--- | :--- |
+| `POST` | `/administradores/Login` | ❌ Público |
+| `GET` | `/administradores/listar` | ✅ `adm` |
+| `POST` | `/Administradores/cadastrar` | ✅ `adm` |
 
 ### 🚗 **Veículos**
-
-| Método | Endpoint | Autorização | Descrição |
-|--------|-----------|-------------|------------|
-| POST | `/veiculos/cadastrar` | ✅ `adm`, `editor` | Cadastra um novo veículo |
-| GET | `/veiculos` | ✅ Autenticado | Lista todos os veículos |
-| GET | `/veiculos/ListaPorId/{id}` | ✅ `adm`, `editor` | Busca veículo por ID |
-| PUT | `/veiculos/{id}` | ✅ `adm` | Atualiza dados de um veículo |
-| DELETE | `/veiculos/Deletar/{id}` | ✅ `adm` | Exclui veículo por ID |
-
-📌 **Validações de cadastro:**
-- `Nome` e `Marca` não podem ser vazios.  
-- `Ano` deve ser maior ou igual a 1950.
-
-🪙 **Exemplo de veículo cadastrado**:
-```json
-{
-  "id": 1,
-  "nome": "Fusca",
-  "marca": "Volkswagen",
-  "ano": 1975
-}
-```
+| Método | Rota | Autorização | Validações |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/veiculos/cadastrar` | ✅ `adm`, `editor` | `Nome`, `Marca` (não vazios), `Ano >= 1950`. |
+| `GET` | `/veiculos` | ✅ Autenticado | Nenhuma |
+| `PUT` | `/veiculos/{id}` | ✅ `adm` | Validações de cadastro aplicadas. |
+| `DELETE` | `/veiculos/Deletar/{id}` | ✅ `adm` | Nenhuma |
 
 ---
 
-## ⚙️ Configuração do Banco de Dados
+## 📂 Estrutura e Organização
 
-No `appsettings.json`:
-
-```json
-"ConnectionStrings": {
-  "mysql": "Server=localhost;Database=MinimalApiDB;Uid=root;Pwd=senha;"
-},
-"Jwt": "chave_super_secreta"
-```
+A arquitetura utiliza a separação de responsabilidades para manter o código limpo:
+* **`Domínio/`**: Contém as **Entidades** e as **Regras de Negócio**.
+* **`infraestrutura/`**: Gerencia o **`DbContexto`** e a conexão com o banco.
+* **`Migrations/`**: Histórico das alterações do schema do banco de dados.
+* **`Program.cs`**: Onde o JWT, EF Core e todos os endpoints são configurados e mapeados.
 
 ---
 
-## 🚀 Como Rodar o Projeto
+## 🚀 Como Rodar Localmente (Docker)
+
+Para rodar a API na sua máquina, garantindo que o MySQL esteja acessível:
 
 ```bash
-# 1. Restaurar dependências
-dotnet restore
+# 1. Certifique-se de que o Docker e o MySQL (ou a variável de conexão) estejam prontos.
+# A porta 8080 é a porta exposta pelo container.
 
-# 2. Aplicar migrations no banco de dados MySQL
-dotnet ef database update
+# 2. Construir a imagem Docker
+docker build -t minimal-api-veiculos .
 
-# 3. Executar a aplicação
-dotnet run
-```
+# 3. Rodar o Container (Expondo a porta 8080)
+# NOTA: Você precisará fornecer a string de conexão real do MySQL
+# (Substitua "SUA_STRING_DE_CONEXAO_AQUI")
+docker run -d -p 8080:8080 --name veiculos-api \
+    -e "ConnectionStrings__mysql=SUA_STRING_DE_CONEXAO_AQUI" \
+    minimal-api-veiculos
 
-Acesse:
-```
-http://localhost:5000
-https://localhost:7000
-```
-
-E a documentação Swagger:
-```
-http://localhost:5000/swagger
-```
-
----
-
-
-## 🧭 Recursos Implementados
-
-- ✅ Autenticação e autorização via JWT  
-- ✅ Rotas públicas e protegidas  
-- ✅ Perfis de usuário (`adm` e `editor`)  
-- ✅ CRUD completo de veículos  
-- ✅ Listagem e cadastro de administradores  
-- ✅ Validações no lado do servidor  
-- ✅ Documentação automática com Swagger  
-- ✅ Conexão com banco MySQL via EF Core
-
----
-
-## 🧱 Melhorias Futuras (Sugestões)
-
-- 🔹 Refresh Token e expiração configurável  
-- 🔹 Paginação e filtros avançados  
-- 🔹 Testes unitários e de integração  
-- 🔹 Logs estruturados com Serilog  
-- 🔹 Deploy em container (Dockerfile)
-
----
-
-## 🪪 Licença
-
-Projeto livre para estudo, testes e evolução profissional.  
-Desenvolvido com 💻 .NET Minimal API.
+# 4. Acessar
+# Swagger local: http://localhost:8080/swagger
