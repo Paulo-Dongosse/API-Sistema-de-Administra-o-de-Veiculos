@@ -1,9 +1,3 @@
-#!/bin/bash
-
-# Este script emula a criação e exibição do arquivo README.md
-# O conteúdo abaixo está no formato Markdown e pronto para ser copiado para seu GitHub.
-
-cat << 'EOF'
 # 🚀 Minimal API .NET 8: Sistema de Administração de Veículos 🛠️
 
 Uma API REST completa, desenvolvida com **.NET 8 Minimal API**, que implementa um sistema seguro de **Gestão de Administradores e Veículos**.
