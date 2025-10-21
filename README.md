@@ -1,22 +1,39 @@
 # 🚀 Minimal API .NET 8: Sistema de Administração de Veículos 🛠️
+# --------------------------------------------------------------
 
-Uma API REST completa, desenvolvida com **.NET 8 Minimal API**, que implementa um sistema seguro de **Gestão de Administradores e Veículos**.
+# 🌐 Acesse e teste a API em produção:
+# 🔗 https://api-sistema-de-administra-o-de-veiculos.onrender.com/swagger/index.html
 
-O projeto utiliza **Autenticação JWT** e controle de acesso por **Roles** (`adm`, `editor`) para proteger rotas.
+# A API está hospedada e conteinerizada no Render com MySQL em nuvem (Aiven).
+# É totalmente funcional — você pode autenticar, cadastrar e consultar veículos direto do Swagger.
 
 ---
 
-## 🌐 Deploy Online e Documentação Interativa
+## 🧭 Introdução
 
-A API está hospedada e conteinerizada no **Render** com MySQL.
+Este projeto foi desenvolvido com o objetivo de demonstrar, de forma prática e didática,
+como construir uma **API REST segura e performática** utilizando **.NET 8 Minimal API**.
 
-**Clique para interagir com o Swagger UI em Produção:**
-[https://api-sistema-de-administra-o-de-veiculos.onrender.com/swagger/index.html](https://api-sistema-de-administra-o-de-veiculos.onrender.com/swagger/index.html)
+O sistema permite **gerenciar administradores e veículos**, aplicando autenticação JWT
+e controle de acesso baseado em perfis de usuário (`adm` e `editor`).
 
-### Visão Geral da API Online
+Ele foi estruturado com separação clara de camadas e foco em **simplicidade, segurança e escalabilidade**.
 
-Visualize a estrutura dos endpoints e dos DTOs:
+### 💡 O que este projeto oferece:
+- CRUD completo de Administradores e Veículos  
+- Autenticação JWT com controle de perfis  
+- Persistência em banco MySQL local ou em nuvem (Aiven)  
+- Deploy automatizado no Render  
+- Documentação interativa via Swagger UI  
 
+---
+
+## 🌐 API Online e Swagger
+
+Visualize e teste todos os endpoints de forma interativa:  
+🔗 **[Abrir Swagger da API em Produção](https://api-sistema-de-administra-o-de-veiculos.onrender.com/swagger/index.html)**  
+
+### Visão Geral da Documentação Online
 <div align="center">
     <img src="ima1.png" alt="Endpoints de Administradores" width="300px"/>
     <img src="ima2.png" alt="Endpoints de Veículos" width="300px"/>
@@ -31,77 +48,47 @@ Visualize a estrutura dos endpoints e dos DTOs:
 | :--- | :--- | :--- |
 | **.NET 8** | Backend (Minimal API) | Foco em performance e endpoints concisos. |
 | **MySQL** | Banco de Dados | Persistência de dados relacional. |
-| **EF Core** | Mapeamento ORM | Gerenciamento de schema e migrações. |
-| **JWT** | Segurança | Autenticação com Bearer Token. |
-| **Docker** | Deploy | Imagem multi-stage leve para produção. |
+| **EF Core** | ORM | Mapeamento e migrações automáticas. |
+| **JWT** | Segurança | Autenticação e autorização via Token. |
+| **Docker + Render** | Deploy | Contêiner leve pronto para produção. |
 
 ---
 
-## 🔐 Autenticação e Autorização (JWT com Roles)
+## 🔐 Autenticação e Perfis
 
-A API requer autenticação via **JWT Bearer Token** para a maioria das rotas.
+A API utiliza **JWT (JSON Web Token)** para autenticação.  
+Cada token inclui o email, o perfil e a data de expiração do usuário autenticado.
 
-### Perfis de Acesso
-| Perfil | Descrição |
+| Perfil | Acesso |
 | :--- | :--- |
-| **`adm`** | **Acesso Total:** CRUD em Administradores e Veículos. |
-| **`editor`** | **Acesso Limitado:** CRUD em Veículos, excluindo exclusão/atualização de Administradores. |
+| **`adm`** | Controle total sobre Administradores e Veículos |
+| **`editor`** | Controle apenas sobre Veículos |
 
-### Dados de Acesso Inicial (Para Teste)
-O banco de dados foi inicializado via EF Core Migrations com a seguinte conta:
-* **Endpoint:** `POST /administradores/Login`
-* **Email:** `administrador@teste.com`
-* **Senha:** `123456`
-* **Perfil:** `adm`
+### 🔑 Conta de Acesso Inicial
+- **Email:** administrador@teste.com  
+- **Senha:** 123456  
+- **Perfil:** adm  
 
 ---
 
-## 🏁 Endpoints em Destaque
+## 🏁 Endpoints Principais
 
 ### 👥 **Administradores**
-| Método | Rota | Autorização |
-| :--- | :--- | :--- |
-| `POST` | `/administradores/Login` | ❌ Público |
-| `GET` | `/administradores/listar` | ✅ `adm` |
-| `POST` | `/Administradores/cadastrar` | ✅ `adm` |
+| Método | Rota | Descrição | Autorização |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/administradores/Login` | Autenticação e geração do token JWT | ❌ Público |
+| `GET` | `/administradores/listar` | Lista todos os administradores | ✅ `adm` |
+| `POST` | `/Administradores/cadastrar` | Cadastra novo administrador | ✅ `adm` |
 
 ### 🚗 **Veículos**
-| Método | Rota | Autorização | Validações |
+| Método | Rota | Descrição | Autorização |
 | :--- | :--- | :--- | :--- |
-| `POST` | `/veiculos/cadastrar` | ✅ `adm`, `editor` | `Nome`, `Marca` (não vazios), `Ano >= 1950`. |
-| `GET` | `/veiculos` | ✅ Autenticado | Nenhuma |
-| `PUT` | `/veiculos/{id}` | ✅ `adm` | Validações de cadastro aplicadas. |
-| `DELETE` | `/veiculos/Deletar/{id}` | ✅ `adm` | Nenhuma |
+| `POST` | `/veiculos/cadastrar` | Cadastra novo veículo | ✅ `adm`, `editor` |
+| `GET` | `/veiculos` | Lista veículos | ✅ Qualquer autenticado |
+| `PUT` | `/veiculos/{id}` | Atualiza dados de um veículo | ✅ `adm` |
+| `DELETE` | `/veiculos/Deletar/{id}` | Remove veículo | ✅ `adm` |
 
 ---
 
-## 📂 Estrutura e Organização
+## 📂 Estrutura do Projeto
 
-A arquitetura utiliza a separação de responsabilidades para manter o código limpo:
-* **`Domínio/`**: Contém as **Entidades** e as **Regras de Negócio**.
-* **`infraestrutura/`**: Gerencia o **`DbContexto`** e a conexão com o banco.
-* **`Migrations/`**: Histórico das alterações do schema do banco de dados.
-* **`Program.cs`**: Onde o JWT, EF Core e todos os endpoints são configurados e mapeados.
-
----
-
-## 🚀 Como Rodar Localmente (Docker)
-
-Para rodar a API na sua máquina, garantindo que o MySQL esteja acessível:
-
-```bash
-# 1. Certifique-se de que o Docker e o MySQL (ou a variável de conexão) estejam prontos.
-# A porta 8080 é a porta exposta pelo container.
-
-# 2. Construir a imagem Docker
-docker build -t minimal-api-veiculos .
-
-# 3. Rodar o Container (Expondo a porta 8080)
-# NOTA: Você precisará fornecer a string de conexão real do MySQL
-# (Substitua "SUA_STRING_DE_CONEXAO_AQUI")
-docker run -d -p 8080:8080 --name veiculos-api \
-    -e "ConnectionStrings__mysql=SUA_STRING_DE_CONEXAO_AQUI" \
-    minimal-api-veiculos
-
-# 4. Acessar
-# Swagger local: http://localhost:8080/swagger
