@@ -1,14 +1,6 @@
 # 🚀 Minimal API .NET 8: Sistema de Administração de Veículos 🛠️
 # --------------------------------------------------------------
 
-# 🌐 Acesse e teste a API em produção:
-# 🔗 https://api-sistema-de-administra-o-de-veiculos.onrender.com/swagger/index.html
-
-# A API está hospedada e conteinerizada no Render com MySQL em nuvem (Aiven).
-# É totalmente funcional — você pode autenticar, cadastrar e consultar veículos direto do Swagger.
-
----
-
 ## 🧭 Introdução
 
 Este projeto foi desenvolvido com o objetivo de demonstrar, de forma prática e didática,
@@ -39,6 +31,14 @@ Visualize e teste todos os endpoints de forma interativa:
     <img src="ima2.png" alt="Endpoints de Veículos" width="300px"/>
     <img src="ima3.png" alt="Schemas de Dados" width="300px"/>
 </div>
+
+# 🌐 Acesse e teste a API em produção:
+# 🔗 https://api-sistema-de-administra-o-de-veiculos.onrender.com/swagger/index.html
+
+# A API está hospedada e conteinerizada no Render com MySQL em nuvem (Aiven).
+# É totalmente funcional — você pode autenticar, cadastrar e consultar veículos direto do Swagger.
+
+---
 
 ---
 
